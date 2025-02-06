@@ -1,29 +1,32 @@
-import express from 'express';  // Import express
-import axios from 'axios';  // Import axios for HTTP requests
-import dotenv from 'dotenv';  // Import dotenv for environment variables
+import express from 'express';
+import axios from 'axios';
+import dotenv from 'dotenv';
 
-dotenv.config();  // Load environment variables
+dotenv.config();
 
-const app = express();  // Create express app
-const port = process.env.PORT || 3000;  // Set port from env variable or default to 3000
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Root endpoint
+app.get('/', (req, res) => {
+    res.send('Welcome to Render Services API');
+});
 
 // Endpoint to get Render services
 app.get('/services', async (req, res) => {
     try {
-        // Make API request to Render with Authorization header
         const response = await axios.get('https://api.render.com/v1/services', {
             headers: {
-                'Authorization': `Bearer ${process.env.RENDER_API_KEY}`  // API key from env variable
+                'Authorization': `Bearer ${process.env.RENDER_API_KEY}`
             }
         });
-        
-        res.json(response.data);  // Return services data as JSON
+        res.json(response.data);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch services' });  // Handle errors
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch services' });
     }
 });
 
-// Start server on specified port
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
